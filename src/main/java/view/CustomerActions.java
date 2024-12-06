@@ -1,5 +1,5 @@
 
-package assignment2;
+package view;
 
 import client.Client;
 
@@ -21,10 +21,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class CustomerPage extends JFrame implements ActionListener
+public class CustomerActions extends JFrame implements ActionListener
 {
-    private JButton btnLogin;
-    private JButton btnRegister;
+    private JButton btnCalculateBill;
+    private JButton btnUpdateExpiry;
     private JButton btnExit;
     private Timer timer;
     private List<ImageIcon> images;
@@ -33,44 +33,44 @@ public class CustomerPage extends JFrame implements ActionListener
     private Client client;
     private void init()
     {
-        this.setTitle("Customer Page");
+        this.setTitle("Customer Operations");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
         this.setSize(1000,650);
         this.setResizable(false);
         timer = new Timer(2000, this);
-        btnLogin = new JButton("Login");
-        btnLogin.setPreferredSize(new Dimension(200,100));
-        btnLogin.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        btnLogin.setFocusable(false);
-        btnLogin.setFont(new Font("Consoal",Font.BOLD,25));
-        btnLogin.addActionListener(this);
-        ImageIcon imgLogin = getCustomImage("customer.png", 55, 55);
-        btnLogin.setIcon(imgLogin);
-        btnRegister = new JButton("Register");
-        btnRegister.setPreferredSize(new Dimension(200,100));
-        btnRegister.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        btnRegister.setFocusable(false);
-        btnRegister.setFont(new Font("Consoal",Font.BOLD,25));
-        btnRegister.addActionListener(this);
-        ImageIcon imgRegister = getCustomImage("employee.png", 55, 55);
-        btnRegister.setIcon(imgRegister);
+        btnCalculateBill = new JButton("Calculate Bill");
+        btnCalculateBill.setPreferredSize(new Dimension(210,100));
+        btnCalculateBill.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        btnCalculateBill.setFocusable(false);
+        btnCalculateBill.setFont(new Font("Consoal",Font.BOLD,25));
+        btnCalculateBill.addActionListener(this);
+        ImageIcon imgLogin = getCustomImage("customer.png", 50, 50);
+        btnCalculateBill.setIcon(imgLogin);
+        btnUpdateExpiry = new JButton("Update Expiry");
+        btnUpdateExpiry.setPreferredSize(new Dimension(210,100));
+        btnUpdateExpiry.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        btnUpdateExpiry.setFocusable(false);
+        btnUpdateExpiry.setFont(new Font("Consolas",Font.BOLD,25));
+        btnUpdateExpiry.addActionListener(this);
+        ImageIcon imgRegister = getCustomImage("employee.png", 50, 50);
+        btnUpdateExpiry.setIcon(imgRegister);
         btnExit = new JButton("exit");
         btnExit.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        btnExit.setPreferredSize(new Dimension(200,100));
+        btnExit.setPreferredSize(new Dimension(210,100));
         btnExit.setFocusable(false);
         btnExit.setFont(new Font("Consoal",Font.BOLD,25));
         btnExit.addActionListener(this);
-        ImageIcon imgExit = getCustomImage("exit.png", 55, 55);
+        ImageIcon imgExit = getCustomImage("exit.png", 50, 50);
         btnExit.setIcon(imgExit);
-        btnLogin.setBackground(Color.red);
-        btnRegister.setBackground(Color.green);
+        btnCalculateBill.setBackground(Color.red);
+        btnUpdateExpiry.setBackground(Color.green);
         btnExit.setBackground(Color.blue);
-        btnLogin.setVerticalTextPosition(JLabel.BOTTOM);
-        btnLogin.setHorizontalTextPosition(JLabel.CENTER);
+        btnCalculateBill.setVerticalTextPosition(JLabel.BOTTOM);
+        btnCalculateBill.setHorizontalTextPosition(JLabel.CENTER);
 
-        btnRegister.setVerticalTextPosition(JLabel.BOTTOM);
-        btnRegister.setHorizontalTextPosition(JLabel.CENTER);
+        btnUpdateExpiry.setVerticalTextPosition(JLabel.BOTTOM);
+        btnUpdateExpiry.setHorizontalTextPosition(JLabel.CENTER);
 
         btnExit.setVerticalTextPosition(JLabel.BOTTOM);
         btnExit.setHorizontalTextPosition(JLabel.CENTER);
@@ -78,8 +78,8 @@ public class CustomerPage extends JFrame implements ActionListener
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         buttonsPanel.setLayout(new GridLayout(3,1,20,20));
-        buttonsPanel.add(btnLogin);
-        buttonsPanel.add(btnRegister);
+        buttonsPanel.add(btnCalculateBill);
+        buttonsPanel.add(btnUpdateExpiry);
         buttonsPanel.add(btnExit);
         lbImage = new JLabel();
         lbImage.setHorizontalAlignment(JLabel.CENTER);
@@ -106,7 +106,7 @@ public class CustomerPage extends JFrame implements ActionListener
         Image customImage = image.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(customImage);
     }
-    public CustomerPage(Client client)
+    public CustomerActions(Client client)
     {
         this.client = client;
         init();
@@ -119,20 +119,21 @@ public class CustomerPage extends JFrame implements ActionListener
             imageIndex = (imageIndex+1)%images.size();
             lbImage.setIcon(images.get(imageIndex));
         }
-        if(e.getSource()==btnLogin)
+        if(e.getSource()==btnCalculateBill)
         {
             this.dispose();
-            new Login("customer",client);
+            new CalculateBill(client);
+            
         }
-        if(e.getSource()==btnRegister)
+        if(e.getSource()==btnUpdateExpiry)
         {
             this.dispose();
-            new RegisterCustomer(client);
+            new UpdateExpiryDate(client);
         }
         if(e.getSource()==btnExit)
         {
             this.dispose();
-            HomPage home = new HomPage(client);
+            new CustomerPage(client);
         }
     }
 }

@@ -1,5 +1,5 @@
 
-package assignment2;
+package view;
 
 public class Assignment2 
 {

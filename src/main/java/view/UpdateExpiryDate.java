@@ -1,4 +1,4 @@
-package assignment2;
+package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -86,43 +86,25 @@ public class UpdateExpiryDate extends JFrame implements ActionListener
         init();
     }
     @Override
-    public void actionPerformed(ActionEvent e) 
+    public void actionPerformed(ActionEvent e)
     {
-        if (e.getSource() == btnUpdate) 
+        if (e.getSource() == btnUpdate)
         {
             String customerStr = tfUsername.getText();
             String cnicStr = new String(tfPassword.getPassword());
             String newExpiryDate = tfDate.getText();
-            System.out.println("customerStr is: "+customerStr);
-            System.out.println("cnicStr is: "+cnicStr);
-//            CustomerOperations operations = new CustomerOperations();
-            if(client.isCustomerIdValidRequest(customerStr))
-            {
-
-//                if(client.isValidCNICRequest(Long.parseLong(cnicStr)))
-//                {
-                    System.out.println("cnic is valid");
-                    boolean success = client.updateExpiryRequest(Long.parseLong(cnicStr), newExpiryDate);
-                    if (success) 
+                    boolean success = client.updateExpiryRequest(cnicStr, newExpiryDate);
+                System.out.println("success is: "+success);
+                    if (success)
                     {
                         JOptionPane.showMessageDialog(this, "expiry date updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    } 
-                    else 
+                    }
+                    else
                     {
                         JOptionPane.showMessageDialog(this, "cnic not founded", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-//                }
-//                else
-//                {
-//                    JOptionPane.showMessageDialog(this, "enter a 13 digit cnic", "Error", JOptionPane.ERROR_MESSAGE);
-//                }
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(this, "customer id not founded", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } 
-        else if (e.getSource() == btnCancel) 
+        }
+        else if (e.getSource() == btnCancel)
         {
             System.exit(0);
             new CustomerPage(client);

@@ -1,5 +1,5 @@
 
-package assignment2;
+package view;
 
 import client.Client;
 
@@ -21,41 +21,40 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class EmployeePage extends JFrame implements ActionListener
+public class HomPage extends JFrame implements ActionListener
 {
-    private JButton btnLogin;
-    private JButton btnRegister;
+    private JButton btnCustomer;
+    private JButton btnEmployee;
     private JButton btnExit;
     private Timer timer;
     private List<ImageIcon> images;
     private int imageIndex;
     private JLabel lbImage;
     private Client client;
-
     private void init()
     {
-        this.setTitle("Employee Page");
+        this.setTitle("Home Page");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
         this.setSize(1000,650);
         this.setResizable(false);
         timer = new Timer(2000, this);
-        btnLogin = new JButton("Login");
-        btnLogin.setPreferredSize(new Dimension(200,100));
-        btnLogin.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        btnLogin.setFocusable(false);
-        btnLogin.setFont(new Font("Consoal",Font.BOLD,25));
-        btnLogin.addActionListener(this);
-        ImageIcon imgLogin = getCustomImage("customer.png", 55, 55);
-        btnLogin.setIcon(imgLogin);
-        btnRegister = new JButton("Register");
-        btnRegister.setPreferredSize(new Dimension(200,100));
-        btnRegister.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        btnRegister.setFocusable(false);
-        btnRegister.setFont(new Font("Consoal",Font.BOLD,25));
-        btnRegister.addActionListener(this);
-        ImageIcon imgRegister = getCustomImage("employee.png", 55, 55);
-        btnRegister.setIcon(imgRegister);
+        btnCustomer = new JButton("Customer");
+        btnCustomer.setPreferredSize(new Dimension(200,100));
+        btnCustomer.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        btnCustomer.setFocusable(false);
+        btnCustomer.setFont(new Font("Consoal",Font.BOLD,25));
+        btnCustomer.addActionListener(this);
+        ImageIcon imgCustomer = getCustomImage("customer.png", 55, 55);
+        btnCustomer.setIcon(imgCustomer);
+        btnEmployee = new JButton("Employee");
+        btnEmployee.setPreferredSize(new Dimension(200,100));
+        btnEmployee.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        btnEmployee.setFocusable(false);
+        btnEmployee.setFont(new Font("Consoal",Font.BOLD,25));
+        btnEmployee.addActionListener(this);
+        ImageIcon imgEmployee = getCustomImage("employee.png", 55, 55);
+        btnEmployee.setIcon(imgEmployee);
         btnExit = new JButton("exit");
         btnExit.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         btnExit.setPreferredSize(new Dimension(200,100));
@@ -64,14 +63,14 @@ public class EmployeePage extends JFrame implements ActionListener
         btnExit.addActionListener(this);
         ImageIcon imgExit = getCustomImage("exit.png", 55, 55);
         btnExit.setIcon(imgExit);
-        btnLogin.setBackground(Color.red);
-        btnRegister.setBackground(Color.green);
+        btnCustomer.setBackground(Color.red);
+        btnEmployee.setBackground(Color.green);
         btnExit.setBackground(Color.blue);
-        btnLogin.setVerticalTextPosition(JLabel.BOTTOM);
-        btnLogin.setHorizontalTextPosition(JLabel.CENTER);
+        btnCustomer.setVerticalTextPosition(JLabel.BOTTOM);
+        btnCustomer.setHorizontalTextPosition(JLabel.CENTER);
 
-        btnRegister.setVerticalTextPosition(JLabel.BOTTOM);
-        btnRegister.setHorizontalTextPosition(JLabel.CENTER);
+        btnEmployee.setVerticalTextPosition(JLabel.BOTTOM);
+        btnEmployee.setHorizontalTextPosition(JLabel.CENTER);
 
         btnExit.setVerticalTextPosition(JLabel.BOTTOM);
         btnExit.setHorizontalTextPosition(JLabel.CENTER);
@@ -79,8 +78,8 @@ public class EmployeePage extends JFrame implements ActionListener
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         buttonsPanel.setLayout(new GridLayout(3,1,20,20));
-        buttonsPanel.add(btnLogin);
-        buttonsPanel.add(btnRegister);
+        buttonsPanel.add(btnCustomer);
+        buttonsPanel.add(btnEmployee);
         buttonsPanel.add(btnExit);
         lbImage = new JLabel();
         lbImage.setHorizontalAlignment(JLabel.CENTER);
@@ -107,7 +106,7 @@ public class EmployeePage extends JFrame implements ActionListener
         Image customImage = image.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(customImage);
     }
-    public EmployeePage(Client client)
+    public HomPage(Client client)
     {
         this.client = client;
         init();
@@ -120,20 +119,19 @@ public class EmployeePage extends JFrame implements ActionListener
             imageIndex = (imageIndex+1)%images.size();
             lbImage.setIcon(images.get(imageIndex));
         }
-        if(e.getSource()==btnLogin)
+        if(e.getSource()==btnCustomer)
         {
             this.dispose();
-            new Login("employee",client);
+            new CustomerPage(client);
         }
-        if(e.getSource()==btnRegister)
+        if(e.getSource()==btnEmployee)
         {
             this.dispose();
-            new RegisterEmployee(client);
+            new EmployeePage(client);
         }
         if(e.getSource()==btnExit)
         {
-            this.dispose();
-            HomPage home = new HomPage(client);
+            System.exit(0);
         }
     }
 }

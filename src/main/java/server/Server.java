@@ -1,125 +1,16 @@
-//package server;
-//
-//import java.io.*;
-//import java.net.ServerSocket;
-//import java.net.Socket;
-//import Controller.CustomerOperations;
-//import Controller.EmployeeOperations;
-//
-//public class server1 {
-//    private static final int PORT = 12345;
-//
-//    public static void main(String[] args) {
-//        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-//            System.out.println("Server started on port " + PORT);
-//
-//            while (true) {
-//                Socket clientSocket = serverSocket.accept();
-//                System.out.println("New client connected: " + clientSocket.getInetAddress());
-//                new ClientHandler(clientSocket).start();
-//            }
-//        } catch (IOException e) {
-//            System.out.println("Error starting the server: " + e.getMessage());
-//        }
-//    }
-//
-//    private static class ClientHandler extends Thread {
-//        private final Socket clientSocket;
-//
-//        public ClientHandler(Socket clientSocket) {
-//            this.clientSocket = clientSocket;
-//        }
-//
-//        @Override
-//        public void run() {
-//            try (
-//                    BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-//                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))
-//            ) {
-//                String request;
-//                CustomerOperations customerOperations = new CustomerOperations();
-//                EmployeeOperations employeeOperations = new EmployeeOperations();
-//
-//                while ((request = reader.readLine()) != null) {
-//                    System.out.println("Received request: " + request);
-//                    String[] requestParts = request.split(",");
-//                    String response = "false";
-//
-//                    switch (requestParts[0]) {
-//                        case "login": {
-//                            String type = requestParts[1];
-//                            String username = requestParts[2];
-//                            String password = requestParts[3];
-//                            System.out.println("type is :"+type+" username is:"+username+" password is :"+password);
-//                            if (type.equalsIgnoreCase("customer")) {
-//                                if (customerOperations.login(username, password)) {
-//                                    response = "true";
-//                                    writer.write(String.valueOf(true));
-//                                    writer.newLine();
-//                                    writer.flush();
-//                                }
-//                            }
-//                            else if (type.equalsIgnoreCase("employee")) {
-//                                if (employeeOperations.login(username, password)) {
-//                                    writer.write(String.valueOf(true));
-//                                    writer.newLine();
-//                                    writer.flush();
-////                                    response = "true";
-//                                }
-//                            }
-//                            else
-//                            {
-//                                writer.write(String.valueOf(false));
-//                                writer.newLine();
-//                                writer.flush();
-//                            }
-//                            break;
-//                        }
-//                        default:
-//                            response = "Invalid request";
-//                            writer.write(response);
-//                            writer.newLine();
-//                            writer.flush();
-//                            break;
-//                    }
-//
-//                    writer.write(response);
-//                    writer.newLine();
-//                    writer.flush();
-//                }
-//            } catch (IOException e) {
-//                System.out.println("Error handling client request: " + e.getMessage());
-//            } finally {
-//                try {
-//                    clientSocket.close();
-//                } catch (IOException e) {
-//                    System.out.println("Error closing client socket: " + e.getMessage());
-//                }
-//            }
-//        }
-//    }
-//}
-
-
-
-
-
 package server;
 
 import java.io.*;
 import java.net.*;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import Controller.CustomerOperations;
 import Controller.EmployeeOperations;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import model.CNICInfo;
 import model.CustomerType;
 import model.MeterType;
-import utility.LocalDateAdapter;
 
 public class Server {
     private static final int PORT = 12345;
@@ -166,7 +57,7 @@ public class Server {
 
                 while ((request = reader.readLine()) != null)
                 {
-                    System.out.println("Received request: " + request);
+                    System.out.println("Received requestserver: " + request);
                     String[] requestParts = request.split(",");
                     switch (requestParts[0])
                     {
@@ -207,7 +98,6 @@ public class Server {
                             int peakUnits = Integer.parseInt(requestParts[5]);
                             String billIssueDate = requestParts[6];
                             boolean result = employeeOperations.addMeterReading(customerId,meterId,billMonth,regularUnits,peakUnits,billIssueDate);
-//                            response = result?"Add meter reading successful":"Add meter reading failed";
                             writer.write(String.valueOf(result));
                             writer.newLine();
                             writer.flush();
@@ -217,7 +107,6 @@ public class Server {
                             String customerId = requestParts[1];
                             String meterId = requestParts[2];
                             boolean billPaid = employeeOperations.payBill(customerId, meterId);
-//                            response = billPaid ? "Pay bill successful" : "Pay bill failed";
                             writer.write(String.valueOf(billPaid));
                             writer.newLine();
                             writer.flush();
@@ -231,7 +120,6 @@ public class Server {
                             double saleTax = Double.parseDouble(requestParts[5]);
                             double fixed = Double.parseDouble(requestParts[6]);
                             boolean result = employeeOperations.updateTaxFile(phase,type,unit,peak,saleTax,fixed);
-//                            response = result?"Update tax file successful":"Update tax file failed";
                             writer.write(String.valueOf(result));
                             writer.newLine();
                             writer.flush();
@@ -266,36 +154,18 @@ public class Server {
                             writer.flush();
                             break;
                         }
-
-//                        case "showExpiringCnics":
-//                        {
-//                            List<CNICInfo> result = employeeOperations.fetchExpiringCNICs();
-//                            if(result!=null){
-//                                System.out.println("there are some expiring cnics");
-//                            }
-//                            Gson gson = new GsonBuilder()
-//                                    .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-//                                    .create();
-//                            String jsonResult = gson.toJson(result);
-//                            writer.write(jsonResult);
-//                            writer.newLine();
-//                            writer.flush();
-//                            break;
-//                        }
                         case "showExpiringCnics":
                         {
-                            try (ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream())) {
+                            List<CNICInfo> result = employeeOperations.fetchExpiringCNICs();
 
-                                List<CNICInfo> result = employeeOperations.fetchExpiringCNICs();
-                                if(result !=null)
-                                {
-                                    System.out.println("there are some expiring cnics");
-                                }
-                                outputStream.writeObject(result);
-                                outputStream.flush();
-                            } catch (IOException e) {
-                                System.out.println("Error in sending object: " + e.getMessage());
+                            StringBuilder serialized = new StringBuilder();
+                            for (CNICInfo info : result) {
+                                serialized.append(info.getCnic()).append(",").append(info.getExpiryDate()).append(";");
                             }
+
+                            writer.write(serialized.toString());
+                            writer.newLine();
+                            writer.flush();
                             break;
                         }
 
@@ -317,14 +187,36 @@ public class Server {
                             writer.flush();
                             break;
                         }
-                        case "updateExpiry":{
-                            long cnic = Long.parseLong(requestParts[1]);
+                        case "updateExpiry":
+                        {
+                            if (requestParts.length < 3) {
+                                System.out.println("invalid request has less number of arugments in server in update expiry");
+                                break;
+                            }
+                            String cnic = requestParts[1];
                             String newExpiryDate = requestParts[2];
-                            boolean result = customerOperations.updateExpiryDate(cnic,newExpiryDate);
+                            boolean result = customerOperations.updateExpiryDate(cnic, newExpiryDate);
                             writer.write(String.valueOf(result));
                             writer.newLine();
                             writer.flush();
+                            break;
                         }
+
+//                        case "updateExpiry":
+//                        {
+//                            System.out.println("request parts is ");
+//                            for(String str:requestParts)
+//                            {
+//                                System.out.print(str+"   ");
+//                            }
+//                            String cnic = requestParts[1];
+//                            String newExpiryDate = requestParts[2];
+//                            boolean result = customerOperations.updateExpiryDate(cnic,newExpiryDate);
+//                            writer.write(String.valueOf(result));
+//                            writer.newLine();
+//                            writer.flush();
+//                            break;
+//                        }
                         case "customerIdValid":{
                             String customerId = requestParts[1];
                             boolean result = customerOperations.isCustomerIdValid(customerId);

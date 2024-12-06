@@ -14,16 +14,16 @@ public class CustomerOperations
     private static String CustomerInfo = "CustomerInfo.txt";
     private static String TariffTaxInfo = "TariffTaxInfo.txt";
 
-    public boolean isCustomerIdValid(String customerId) {
+    public boolean isCustomerIdValid(String customerId)
+    {
         boolean found = false;
         try (BufferedReader reader = new BufferedReader(new FileReader(CustomerInfo))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] result = line.split(",");
-                System.out.println("result of zero is: "+result[0]);
                 if (result[0].equals(customerId)) {
                     found = true;
-                    System.out.println("customer id is valid");
+                    System.out.println("customer id is valid and it's founded");
                     break;
                 }
             }
@@ -141,7 +141,40 @@ public class CustomerOperations
         return cnicStr.length() == 13;
     }
 
-    public boolean updateExpiryDate(long cnic, String newExpiryDate)
+//    public boolean updateExpiryDate(long cnic, String newExpiryDate)
+//    {
+//        boolean updated = false;
+//        List<String> fileContent = new ArrayList<>();
+//        String line;
+//
+//        try (BufferedReader reader = new BufferedReader(new FileReader("NadraDB.txt"))) {
+//            while ((line = reader.readLine()) != null) {
+//                List<String> result = Arrays.asList(line.split(","));
+//                if (String.valueOf(cnic).equals(result.get(0))) {
+//                    result.set(1, newExpiryDate);
+//                    updated = true;
+//                }
+//                fileContent.add(String.join(",", result));
+//            }
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//            return false;
+//        }
+//        if (updated) {
+//            try (BufferedWriter writer = new BufferedWriter(new FileWriter("NadraDB.txt"))) {
+//                for (String updatedLine : fileContent) {
+//                    writer.write(updatedLine);
+//                    writer.newLine();
+//                }
+//            } catch (IOException e) {
+//                System.out.println(e.getMessage());
+//                return false;
+//            }
+//        }
+//        return updated;
+//    }
+
+    public boolean updateExpiryDate(String cnic, String newExpiryDate)
     {
         boolean updated = false;
         List<String> fileContent = new ArrayList<>();
@@ -149,17 +182,23 @@ public class CustomerOperations
 
         try (BufferedReader reader = new BufferedReader(new FileReader("NadraDB.txt"))) {
             while ((line = reader.readLine()) != null) {
+                System.out.println("here reached");
                 List<String> result = Arrays.asList(line.split(","));
-                if (String.valueOf(cnic).equals(result.get(0))) {
+                if (cnic.equals(result.getFirst())) {
+
                     result.set(1, newExpiryDate);
                     updated = true;
+                    System.out.println("Updated CNIC: " + cnic + " with new expiry date: " + newExpiryDate);
+                } else {
+                    System.out.println("No match for CNIC: " + cnic + " in line: " + line);
                 }
                 fileContent.add(String.join(",", result));
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
             return false;
         }
+
         if (updated) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("NadraDB.txt"))) {
                 for (String updatedLine : fileContent) {
@@ -167,12 +206,17 @@ public class CustomerOperations
                     writer.newLine();
                 }
             } catch (IOException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Error writing to file: " + e.getMessage());
                 return false;
             }
         }
+        else {
+            System.out.println("CNIC not found. No updates made.");
+        }
+
         return updated;
     }
+
 
     public boolean addCustomer(long cnic, String name, String address, long phone, CustomerType customerType, MeterType meterType) {
         boolean customerExists = false;

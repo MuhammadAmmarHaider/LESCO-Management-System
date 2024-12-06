@@ -1,4 +1,4 @@
-package assignment2;
+package view;
 
 import java.awt.Color;
 import java.awt.Font;
